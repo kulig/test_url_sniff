@@ -1,0 +1,13 @@
+*.git*
+.run
+.idea
+.vscode
+.dockerignore
+.project
+.pydevproject
+.venv
+*.env
+venv
+[Dd]ocker*
+**/.mypy_cache
+**/.ruff_cache

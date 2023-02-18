@@ -1,0 +1,9 @@
+select = ["E", "F", "W", "C90", "S", "COM", "C4", "G", "PIE", "T20", "PL", "PLE", "PLR", "PLW"]
+line-length = 120
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".ruff_cache",
+    "venv",
+    "alembic",
+]

@@ -1,0 +1,26 @@
+version: "3.8"
+
+
+x-environment:
+  &default-environment
+  TZ: Europe/Moscow
+
+
+services:
+  db:
+    image: postgres:15
+    container_name: url-sniff.db
+    environment:
+      <<: *default-environment
+    env_file:
+      - dev.env
+    volumes:
+      - db.data:/var/lib/postgresql/data
+    ports:
+      - target: 5432
+        published: 5434
+
+
+volumes:
+  db.data:
+    name: url-sniff.db.data
