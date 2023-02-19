@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Задача "{data.url}"</title>
+</head>
+<body>
+    <h1>Задача "{{ data.url }}"</h1>
+    <h2>Тэги</h2>
+    <table border="1">
+        <tr>
+            <th>Тэг</th>
+            <th>Кол-во</th>
+        </tr>
+        {% for key, value in data.tags.items() %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2>Скрипты</h2>
+        {% if data.scripts %}
+        <table border="1">
+            {% for key in data.scripts.keys() %}
+            <tr>
+                <td><a href="/script/{{ data.id }}/{{ key }}">{{ key }}</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            <p>Скриптов не обнаружено</p>
+        {% endif %}
+</body>
+</html>

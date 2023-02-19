@@ -46,6 +46,7 @@ USER ${USER}
 CMD ["uvicorn", "url_sniff:app", "--host", "0.0.0.0", "--port", "8000"]
 
 # docker build --pull --target production --tag url-sniff:<version> .
+# docker run --rm -it -p 8000:8000 --network url-sniff --env-file dev.env url-sniff
 
 
 # testing virtualenv

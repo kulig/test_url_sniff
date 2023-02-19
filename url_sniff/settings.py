@@ -1,7 +1,11 @@
+"""Модуль настроек."""
+
 from pydantic import BaseSettings
 
 
 class AppSettings(BaseSettings):
+    """Настроки приложения. """
+
     debug: bool = False
 
 
@@ -14,6 +18,8 @@ class DBSettings(BaseSettings):
     password: str = ''
 
     class Config:
+        """Определяет префикс для настроек БД и варианты названия настроек."""
+
         env_prefix = 'db_'
         fields = {
             'database': {
