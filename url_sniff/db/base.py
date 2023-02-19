@@ -12,9 +12,22 @@ from ..settings import app_settings, db_settings
 Base = declarative_base()
 
 
-url = URL.create(**db_settings.dict())
+# Для синхронного использования
+url_sync = URL.create(
+    drivername='postgresql+psycopg2',
+    **db_settings.dict(),
+)
+engine = create_engine(url_sync)
+session = sessionmaker(bind=engine)
+
+
+# Для асинхронного использования
+url_async = URL.create(
+    drivername='postgresql+asyncpg',
+    **db_settings.dict(),
+)
 async_engine = create_async_engine(
-    url,
+    url_async,
     echo=app_settings.debug,
 )
 async_session = async_sessionmaker(
@@ -22,6 +35,3 @@ async_session = async_sessionmaker(
     class_=AsyncSession,
     expire_on_commit=False,
 )
-
-engine = create_engine(url)
-session = sessionmaker(bind=engine)

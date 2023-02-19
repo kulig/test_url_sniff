@@ -7,10 +7,12 @@ class AppSettings(BaseSettings):
     """Настроки приложения. """
 
     debug: bool = False
+    max_workers: int = 5
 
 
 class DBSettings(BaseSettings):
-    drivername: str = 'postgresql+asyncpg'
+    """Настройки БД."""
+
     host: str = 'localhost'
     port: int = 5432
     database: str = 'postgres'

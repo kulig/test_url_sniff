@@ -23,6 +23,10 @@ app = FastAPI(
     debug=app_settings.debug,
 )
 
+
+logging.basicConfig(level=logging.DEBUG)
+
+
 templates = Jinja2Templates(directory="url_sniff/templates")
 
 
