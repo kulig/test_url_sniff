@@ -1,22 +1,40 @@
+"""Модуль парсинга URL."""
+
 from typing import Optional
 from collections import Counter
 
 import requests
 from bs4 import BeautifulSoup
 
-from .db.models import Tasks
 from .db import session
+from .db.models import Tasks
+from .const import STATUS_DONE, STATUS_ERROR
 
 
-def parser(task_id: int) -> None:
-    sess = session()
-    task: Optional[Tasks] = sess.query(Tasks).get(task_id)
-    if task is None:
-        return
+def parser(task_id: int, url: str) -> None:
+    """
+    Парсинг URL.
 
-    resp = requests.get(task.url, allow_redirects=True, timeout=5)
+    :param task_id: ID задачи.
+    :param url: URL.
+    """
+
+    resp = requests.get(url, allow_redirects=True, timeout=10)
     bs = BeautifulSoup(resp.text, "html.parser")
-    task.tags = dict(Counter([i.name for i in bs.find_all()]).items())
-    task.status = 1
-    sess.add(task)
-    sess.commit()
+
+    with session() as db_session:
+        task: Optional[Tasks] = db_session.get(Tasks, task_id)
+        if task is None:
+            return
+
+        try:
+            task.tags = dict(Counter([i.name for i in bs.find_all()]).items())
+            task.scripts = {f"script_{n}": str(i) for n, i in enumerate(bs.find_all("script"), 1)}
+            task.status = STATUS_DONE
+            task.error = None
+        except Exception as err:
+            task.status = STATUS_ERROR
+            task.error = str(err)
+        finally:
+            db_session.add(task)
+            db_session.commit()
