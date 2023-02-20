@@ -3,7 +3,7 @@
 import logging
 from typing import Optional, Dict
 
-from fastapi import FastAPI, Depends, Request
+from fastapi import FastAPI, Depends, Request, Path
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from sqlalchemy import and_
@@ -39,18 +39,14 @@ def root() -> str:
     return "Парсинг URL-адресов."
 
 
-@app.post("/tasks/parse_page")
+@app.post(
+    "/tasks/parse_page",
+    description="Создает задачу на парсинг URL. Возвращает ID созданной задачи.",
+)
 async def parse_page(
         task_url: TaskIn,
         db_session: AsyncSession = Depends(get_session),
 ) -> TaskOut:
-    """
-    Создает задачу на парсинг URL. Возвращает ID созданной задачи.
-
-    :param task_url: URL.
-    :param db_session: Сессия БД.
-    """
-
     # Проверяем имеется ли уже в очереди на обработку передаваемый адрес.
     # Избегаем "залипания" на передачу одного и того же адреса.
 
@@ -76,17 +72,15 @@ async def parse_page(
     return TaskOut(task_id=task.id)
 
 
-@app.get("/tasks/{task_id}", response_class=JSONResponse)
+@app.get(
+    "/tasks/{task_id}",
+    response_class=JSONResponse,
+    description="Получить результат парсинга адреса."
+)
 async def get_task(
         task_id: int,
         db_session: AsyncSession = Depends(get_session),
 ) -> TaskInfoOut:
-    """
-    Получить результат парсинга адреса.
-
-    :param task_id: ID задачи.
-    :param db_session: Сессия БД.
-    """
 
     task: Optional[Tasks] = (
         await db_session.scalars(
@@ -106,19 +100,16 @@ async def get_task(
     )
 
 
-@app.get("/tasks/{task_id}/html", response_class=HTMLResponse)
+@app.get(
+    "/tasks/{task_id}/html",
+    response_class=HTMLResponse,
+    description="Формирует результат парсинга в виде HTML страницы."
+)
 async def get_task_html(
         request: Request,
         task_id: int,
         db_session: AsyncSession = Depends(get_session),
 ) -> _TemplateResponse:
-    """
-    Формирует результат парсинга в виде HTML страницы.
-
-    :param request: Request.
-    :param task_id: ID задачи.
-    :param db_session: Сессия БД.
-    """
 
     task: TaskInfoOut = await get_task(task_id, db_session)
 
@@ -131,19 +122,16 @@ async def get_task_html(
     )
 
 
-@app.get("/tasks/{task_id}/scripts/{script_id}", response_class=PlainTextResponse)
+@app.get(
+    "/tasks/{task_id}/scripts/{script_id}",
+    response_class=PlainTextResponse,
+    description="Получить текст скрипта из задачи по парсингу."
+)
 async def get_script(
         task_id: int,
         script_id: str,
         db_session: AsyncSession = Depends(get_session),
 ) -> Optional[str]:
-    """
-    Получить текст скрипта из задачи по парсингу.
-
-    :param task_id: ID задачи.
-    :param script_id: ID скрипта.
-    :param db_session: Сессия БД.
-    """
 
     scripts: Dict[str, str] = await db_session.scalar(
         select(Tasks.scripts).where(Tasks.id == task_id),
