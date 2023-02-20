@@ -16,6 +16,7 @@ class TaskOut(BaseModel):
 class TaskInfoOut(BaseModel):
     id: Optional[int]
     url: Optional[HttpUrl]
+    status: Optional[int]
     tags: Optional[Dict[str, int]]
     scripts: Optional[Dict[str, str]]
     error: Optional[str]

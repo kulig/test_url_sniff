@@ -48,7 +48,7 @@ class WorkerPool:
                     t.status = STATUS_PROCESS
                     db_session.add(t)
                     await db_session.commit()
-                    self.executor.submit(parser, t.id, t.url)
+                    self.executor.submit(parser, t.id)
 
             # Немного спим)
             await sleep(1)

@@ -6,28 +6,43 @@
 </head>
 <body>
     <h1>Задача "{{ data.url }}"</h1>
+    <h2>Статус</h2>
+        {% if data.status == 0 %}
+            <p>В процессе</p>
+        {% elif data.status == 1 %}
+            <p>Готово</p>
+        {% elif data.status == 2 %}
+            <p>Ошибка</p>
+            <p>{{ data.error }}</p>
+        {% elif data.status == 3 %}
+            <p>В процессе</p>
+        {% endif %}
     <h2>Тэги</h2>
-    <table border="1">
-        <tr>
-            <th>Тэг</th>
-            <th>Кол-во</th>
-        </tr>
-        {% for key, value in data.tags.items() %}
-        <tr>
-            <td>{{ key }}</td>
-            <td>{{ value }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        {% if data.scripts %}
+            <table border="1">
+                <tr>
+                    <th>Тэг</th>
+                    <th>Кол-во</th>
+                </tr>
+                {% for key, value in data.tags.items() %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>Тэгов нет</p>
+        {% endif %}
     <h2>Скрипты</h2>
         {% if data.scripts %}
-        <table border="1">
-            {% for key in data.scripts.keys() %}
-            <tr>
-                <td><a href="/script/{{ data.id }}/{{ key }}">{{ key }}</a></td>
-            </tr>
-            {% endfor %}
-        </table>
+            <table border="1">
+                {% for key in data.scripts.keys() %}
+                <tr>
+                    <td><a href="/script/{{ data.id }}/{{ key }}">{{ key }}</a></td>
+                </tr>
+                {% endfor %}
+            </table>
         {% else %}
             <p>Скриптов не обнаружено</p>
         {% endif %}

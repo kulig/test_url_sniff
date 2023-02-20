@@ -5,7 +5,7 @@ from typing import Optional, Dict
 
 from fastapi import FastAPI, Depends, Request
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, ORJSONResponse, PlainTextResponse
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from sqlalchemy import and_
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -101,7 +101,7 @@ async def get_task_html(
     )
 
 
-@app.get("/task/{task_id}", response_class=ORJSONResponse)
+@app.get("/task/{task_id}", response_class=JSONResponse)
 async def get_task(
         task_id: int,
         db_session: AsyncSession = Depends(get_session),
@@ -123,9 +123,11 @@ async def get_task(
 
     return TaskInfoOut(
         id=task.id,
+        status=task.status,
         url=task.url,
         tags=task.tags,
         scripts=task.scripts,
+        error=task.error,
     )
 
 
