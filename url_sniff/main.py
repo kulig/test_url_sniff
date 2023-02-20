@@ -78,7 +78,7 @@ async def parse_page(
     description="Получить результат парсинга адреса."
 )
 async def get_task(
-        task_id: int,
+        task_id: int = Path(title="ID задачи"),
         db_session: AsyncSession = Depends(get_session),
 ) -> TaskInfoOut:
 
@@ -107,7 +107,7 @@ async def get_task(
 )
 async def get_task_html(
         request: Request,
-        task_id: int,
+        task_id: int = Path(title="ID задачи"),
         db_session: AsyncSession = Depends(get_session),
 ) -> _TemplateResponse:
 
@@ -128,8 +128,8 @@ async def get_task_html(
     description="Получить текст скрипта из задачи по парсингу."
 )
 async def get_script(
-        task_id: int,
-        script_id: str,
+        task_id: int = Path(title="ID задачи"),
+        script_id: str = Path(title="ID скрипта"),
         db_session: AsyncSession = Depends(get_session),
 ) -> Optional[str]:
 
