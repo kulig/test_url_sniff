@@ -76,32 +76,7 @@ async def parse_page(
     return TaskOut(task_id=task.id)
 
 
-@app.get("/tasks/{task_id}", response_class=HTMLResponse)
-async def get_task_html(
-        request: Request,
-        task_id: int,
-        db_session: AsyncSession = Depends(get_session),
-) -> _TemplateResponse:
-    """
-    Формирует результат парсинга в виде HTML страницы.
-
-    :param request: Request.
-    :param task_id: ID задачи.
-    :param db_session: Сессия БД.
-    """
-
-    task: TaskInfoOut = await get_task(task_id, db_session)
-
-    return templates.TemplateResponse(
-        "task_info.html",
-        {
-            "request": request,
-            "data": task.dict(),
-        },
-    )
-
-
-@app.get("/task/{task_id}", response_class=JSONResponse)
+@app.get("/tasks/{task_id}", response_class=JSONResponse)
 async def get_task(
         task_id: int,
         db_session: AsyncSession = Depends(get_session),
@@ -131,7 +106,32 @@ async def get_task(
     )
 
 
-@app.get("/script/{task_id}/{script_id}", response_class=PlainTextResponse)
+@app.get("/tasks/{task_id}/html", response_class=HTMLResponse)
+async def get_task_html(
+        request: Request,
+        task_id: int,
+        db_session: AsyncSession = Depends(get_session),
+) -> _TemplateResponse:
+    """
+    Формирует результат парсинга в виде HTML страницы.
+
+    :param request: Request.
+    :param task_id: ID задачи.
+    :param db_session: Сессия БД.
+    """
+
+    task: TaskInfoOut = await get_task(task_id, db_session)
+
+    return templates.TemplateResponse(
+        "task_info.html",
+        {
+            "request": request,
+            "data": task.dict(),
+        },
+    )
+
+
+@app.get("/tasks/{task_id}/scripts/{script_id}", response_class=PlainTextResponse)
 async def get_script(
         task_id: int,
         script_id: str,
