@@ -1,0 +1,17 @@
+Примеры команд.
+
+# Настройка alembic и накатывание миграций.
+dotenv --file dev.env run alembic revision --message "test"
+alembic upgrade head
+
+# Установка и удаление через poetry.
+poetry add alembic
+poetry remove --group dev alembic
+
+# Запуск докера с БД.
+docker compose --file docker-compose.dev.yml ps
+docker compose --file docker-compose.dev.yml up -d
+
+# Запуск докера с приложением.
+docker build --pull --target production --tag url-sniff .
+docker run --rm -it -p 8000:8000 --network url-sniff --env-file dev.env url-sniff
